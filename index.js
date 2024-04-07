@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server');
+const sessions = require('./data/sessions.json');
 
 
 
@@ -17,10 +18,15 @@ type Session    {
     day: String
     format: String
     level: String
-    track:String
+    track:String @deprecated(reason: "Too many sessions do not fit into a single track, we will be migrating to tags soon")
 }`
 
-const server = new ApolloServer({ typeDefs });
+const resolvers = {
+    Query: {
+        sessions: () => sessions
+    }
+}
+const server = new ApolloServer({ typeDefs, resolvers });
 
 server.listen({ port: process.env.PORT || 4000 })
     .then(({ url }) => {
