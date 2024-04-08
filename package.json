@@ -13,6 +13,7 @@
   "dependencies": {
     "apollo-datasource": "^0.7.0",
     "apollo-server": "2.12",
+    "lodash": "4.17",
     "nodemon": "^2.0.3"
   }
 }
