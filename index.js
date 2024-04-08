@@ -5,7 +5,18 @@ const SessionAPI = require('./datasources/sessions');
 
 const typeDefs = gql`
 type Query {
-    sessions: [Session],
+    sessions(
+        id: ID
+        title: String
+        description: String
+        startsAt: String
+        endsAt: String
+        room: String
+        day: String
+        format: String
+        level: String
+        track: String
+    ): [Session]
     sessionById(id: ID): Session
 }
 
@@ -19,13 +30,13 @@ type Session    {
     day: String
     format: String
     level: String
-    track:String @deprecated(reason: "Too many sessions do not fit into a single track, we will be migrating to tags soon")
+    track: String @deprecated(reason: "Too many sessions do not fit into a single track, we will be migrating to tags soon")
 }`
 
 const resolvers = {
     Query: {
         sessions: (parent, args,{dataSources}, info) => {
-            return dataSources.sessionAPI.getSessions();
+            return dataSources.sessionAPI.getSessions(args);
         },
         sessionById: (parent, {id}, {dataSources}, info) => {
             return dataSources.sessionAPI.getSessionById(id);

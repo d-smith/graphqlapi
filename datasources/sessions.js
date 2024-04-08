@@ -9,8 +9,8 @@ class SessionAPI extends DataSource {
     initialize(config) {
         this.context = config.context;
     }
-    getSessions() {
-        return sessions;
+    getSessions(args) {
+        return _.filter(sessions, args);
     }
 
     getSessionById(id) {
