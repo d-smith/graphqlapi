@@ -3,51 +3,25 @@ const SessionAPI = require('./datasources/sessions');
 
 
 
-const typeDefs = gql`
-type Query {
-    sessions(
-        id: ID
-        title: String
-        description: String
-        startsAt: String
-        endsAt: String
-        room: String
-        day: String
-        format: String
-        level: String
-        track: String
-    ): [Session]
-    sessionById(id: ID): Session
-}
+const typeDefs = require('./schema.js');
 
-type Session    {
-    id: ID!
-    title: String!
-    description: String
-    startsAt: String
-    endsAt: String
-    room: String
-    day: String
-    format: String
-    level: String
-    track: String @deprecated(reason: "Too many sessions do not fit into a single track, we will be migrating to tags soon")
-}`
-
-const resolvers = {
-    Query: {
-        sessions: (parent, args,{dataSources}, info) => {
-            return dataSources.sessionAPI.getSessions(args);
-        },
-        sessionById: (parent, {id}, {dataSources}, info) => {
-            return dataSources.sessionAPI.getSessionById(id);
-        }
-    }
-}
+const resolvers = require('./resolvers.js');
 
 const dataSources = () => ({
     sessionAPI: new SessionAPI()
 })
-const server = new ApolloServer({ typeDefs, resolvers, dataSources});
+
+// Note - can set NODE_ENV to 'production' to disable playground and 
+// still allow introspection (and remove the introspection and 
+// playground properties from the ApolloServer constructor below)
+const server = new ApolloServer(
+    { 
+        typeDefs, 
+        resolvers, 
+        dataSources,
+        introspection: true,
+        playground: true,
+    });
 
 server.listen({ port: process.env.PORT || 4000 })
     .then(({ url }) => {
