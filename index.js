@@ -28,6 +28,7 @@ const server = new ApolloServer(
                 return new ApolloError('We are having some trouble',
                     'ERROR', { token: 'uniquetoken' });
             }
+            return err;
         }
     });
 
