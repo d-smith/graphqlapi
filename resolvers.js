@@ -5,5 +5,13 @@ const Mutation = require('./resolvers/mutation');
 module.exports = {
     Query,
     Session,
-    Mutation
+    Mutation,
+    SessionOrError: {
+        __resolveType(obj) {
+            if (obj.code) {
+                return 'Error';
+            }
+            return 'Session';
+        }
+    }
 };
