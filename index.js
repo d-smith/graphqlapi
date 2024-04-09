@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer, ApolloError } = require('apollo-server');
 const SessionAPI = require('./datasources/sessions');
 const SpeakerAPI = require('./datasources/speakers');
 
@@ -17,12 +17,18 @@ const dataSources = () => ({
 // still allow introspection (and remove the introspection and 
 // playground properties from the ApolloServer constructor below)
 const server = new ApolloServer(
-    { 
-        typeDefs, 
-        resolvers, 
+    {
+        typeDefs,
+        resolvers,
         dataSources,
         introspection: true,
         playground: true,
+        formatError: (err) => {
+            if (err.extensions.code == 'INTERNAL_SERVER_ERROR') {
+                return new ApolloError('We are having some trouble',
+                    'ERROR', { token: 'uniquetoken' });
+            }
+        }
     });
 
 server.listen({ port: process.env.PORT || 4000 })
